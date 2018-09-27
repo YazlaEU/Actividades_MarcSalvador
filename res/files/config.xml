@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Game>
+	<Enemies>
+		<Enemy EnemyID="1">
+			<Health>50</Health>
+			<Damage>5</Damage>
+			<Defense>3</Defense>
+			<Speed>1</Speed>
+			<Experience>25</Experience>
+			<Weapon>1</Weapon>
+		</Enemy>
+		<Enemy EnemyID="2">
+			<Health>100</Health>
+			<Damage>8</Damage>
+			<Defense>2</Defense>
+			<Speed>1</Speed>
+			<Experience>50</Experience>
+			<Weapon>2</Weapon>
+		</Enemy>
+		<Enemy EnemyID="3">
+			<Health>30</Health>
+			<Damage>9</Damage>
+			<Defense>2</Defense>
+			<Speed>2</Speed>
+			<Experience>60</Experience>
+			<Weapon>4</Weapon>
+		</Enemy>
+		<Enemy EnemyID="4">
+			<Health>200</Health>
+			<Damage>9</Damage>
+			<Defense>2</Defense>
+			<Speed>1</Speed>
+			<Experience>250</Experience>
+			<Weapon>2</Weapon>
+			<Weapon>3</Weapon>
+		</Enemy>
+  </Enemies>
+	<Weapons>
+		<Weapon WeaponID="1">
+			<WeaponClass>Sword</WeaponClass>
+			<WeaponRange>1</WeaponRange>
+		</Weapon>
+		<Weapon WeaponID="2">
+			<WeaponClass>Axe</WeaponClass>
+			<WeaponRange>1</WeaponRange>
+		</Weapon>
+		<Weapon WeaponID="3">
+			<WeaponClass>Spear</WeaponClass>
+			<WeaponRange>1</WeaponRange>
+		</Weapon>
+		<Weapon WeaponID="4">
+			<WeaponClass>Bow</WeaponClass>
+			<WeaponRange>5</WeaponRange>
+		</Weapon>
+	</Weapons>
+</Game>
