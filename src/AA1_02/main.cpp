@@ -1,6 +1,7 @@
 #include <SDL.h>		// Always needs to be included for an SDL app
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 
 #include <exception>
 #include <iostream>
@@ -10,10 +11,7 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 600
 
-struct mouseOver {
-	int x;
-	int y:
-};
+
 
 int main(int, char*[]) 
 {
@@ -38,7 +36,7 @@ int main(int, char*[])
 	//-->SDL_TTF
 	if (TTF_Init() != 0) throw "No es pot inicialitzar SDL_ttf";
 	//-->SDL_Mix
-
+	const Uint8 mixFlags{ MIX_INIT_MP3 };
 	// --- SPRITES ---
 		//Background
 		SDL_Texture* bgTexture{ IMG_LoadTexture(m_renderer, "../../res/img/bg.jpg") };
@@ -58,16 +56,33 @@ int main(int, char*[])
 		if (tmpSurf == nullptr) throw "Unable to create the SDL text surface";
 		SDL_Texture *textTexture{ SDL_CreateTextureFromSurface(m_renderer,tmpSurf) };
 		SDL_Rect textRect{ 100,50,tmpSurf->w,tmpSurf->h };
+		SDL_FreeSurface(tmpSurf);
 
-		tmpSurf = { TTF_RenderText_Blended(font, "Jest A Prank Bro!", SDL_Color{255,100,0,255}) };
-		SDL_Texture *textPlayHover{ SDL_CreateTextureFromSurface(m_renderer,tmpSurf) };
-
+		tmpSurf = { TTF_RenderText_Blended(font, "Exit!", SDL_Color{255,100,0,255}) };
+		SDL_Texture *textExit{ SDL_CreateTextureFromSurface(m_renderer,tmpSurf) };
+		if (tmpSurf == nullptr) throw "Unable to create the SDL text surface";
+		SDL_Rect textRectExit{ 650,500,tmpSurf->w,tmpSurf->h };
 		SDL_FreeSurface( tmpSurf );
+
+		tmpSurf = { TTF_RenderText_Blended(font, "Play!", SDL_Color{255,100,0,255}) };
+		SDL_Texture *textPlay{ SDL_CreateTextureFromSurface(m_renderer,tmpSurf) };
+		if (tmpSurf == nullptr) throw "Unable to create the SDL text surface";
+		SDL_Rect textRectPlay{ 50,500,tmpSurf->w,tmpSurf->h };
+		SDL_FreeSurface( tmpSurf );
+
+		tmpSurf = { TTF_RenderText_Blended(font, "Sound Off!", SDL_Color{255,100,0,255}) };
+		SDL_Texture *textSound{ SDL_CreateTextureFromSurface(m_renderer,tmpSurf) };
+		if (tmpSurf == nullptr) throw "Unable to create the SDL text surface";
+		SDL_Rect textRectSound{ 250,500,tmpSurf->w,tmpSurf->h };
+		SDL_FreeSurface(tmpSurf);
+
 		TTF_CloseFont(font);
 
 
 	// --- AUDIO ---
-
+		Mix_Music *menuSound = { Mix_LoadMUS("../../res/au/mainTheme.mp3") };
+		Mix_VolumeMusic(MIX_MAX_VOLUME / 2);
+		Mix_PlayMusic(menuSound, -1);
 	// --- GAME LOOP ---
 	SDL_Event event; //SDL_Event es un struct (Recordar [Go to Definition] para ver como funciona internamente)
 	bool isRunning = true;
@@ -87,6 +102,19 @@ int main(int, char*[])
 			case SDL_KEYDOWN:	
 				if (event.key.keysym.sym == SDLK_ESCAPE) isRunning = false; //Agafa cada cop que s'apreta un boto, pero nomes reacciona si es ESC.
 				break;
+			case SDL_MOUSEBUTTONDOWN:
+				if (event.motion.x > 650 && event.motion.y > 500) {
+					//EXIT
+					isRunning = false;
+					break;
+				}
+				if (event.motion.x < 100 && event.motion.y > 500) {
+					//PLAY
+				}
+				if (event.motion.x > 250 && event.motion.x < 500 && event.motion.y > 500) {
+					//SOUNDOFF
+					Mix_Pause(-1);
+				}
 			default:;
 			}
 		}
@@ -94,6 +122,7 @@ int main(int, char*[])
 		// UPDATE
 		playerRect.x += (playerTarget.x - playerRect.x) / 10;
 		playerRect.y += (playerTarget.y - playerRect.y) / 10;
+
 		// DRAW
 		SDL_RenderClear(m_renderer); //Neteja el buffer
 			//Background
@@ -102,6 +131,9 @@ int main(int, char*[])
 			SDL_RenderCopy(m_renderer, playerTexture, nullptr, &playerRect);
 			//Text
 			SDL_RenderCopy(m_renderer, textTexture, nullptr, &textRect);
+			SDL_RenderCopy(m_renderer, textExit, nullptr, &textRectExit);
+			SDL_RenderCopy(m_renderer, textPlay, nullptr, &textRectPlay);
+			SDL_RenderCopy(m_renderer, textSound, nullptr, &textRectSound);
 		SDL_RenderPresent(m_renderer);
 
 	}
@@ -110,8 +142,10 @@ int main(int, char*[])
 	SDL_DestroyTexture(bgTexture);
 	SDL_DestroyTexture(playerTexture);
 	SDL_DestroyTexture(textTexture);
+	Mix_CloseAudio();
 	IMG_Quit();
 	TTF_Quit();
+	Mix_Quit();
 	SDL_DestroyRenderer(m_renderer);
 	SDL_DestroyWindow(m_window);
 
